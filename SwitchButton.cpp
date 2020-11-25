@@ -1,89 +1,64 @@
 ﻿#include "SwitchButton.hpp"
 #include <QPainter>
 #include <QRectF>
-#include <QEvent>
+#include <QPalette>
 
-/// 默认配色
-const QColor SwitchButton::DEFAULT_ON_BG_COLOR {QColor(0x63, 0xBA, 0xFF)};
-const QColor SwitchButton::DEFAULT_OFF_BG_COLOR {QColor(0xE7, 0xE3, 0xE7)};
-const QColor SwitchButton::DEFAULT_ON_SLIDER_COLOR {QColor(Qt::white)};
-const QColor SwitchButton::DEFAULT_OFF_SLIDER_COLOR {QColor(Qt::white)};
-const QColor SwitchButton::DEFAULT_DISABLED_ON_BG_COLOR {QColor(0xA0, 0xA0, 0xA0)};
-const QColor SwitchButton::DEFAULT_DISABLED_OFF_BG_COLOR {QColor(0xC0, 0xC0, 0xC0)};
-const QColor SwitchButton::DEFAULT_DISABLED_ON_SLIDER_COLOR {QColor(0xE0, 0xE0, 0xE0)};
-const QColor SwitchButton::DEFAULT_DISABLED_OFF_SLIDER_COLOR {QColor(0xE0, 0xE0, 0xE0)};
-
-SwitchButton::SwitchButton(QWidget *parent) :
-    QAbstractButton(parent)
+SwitchButton::SwitchButton(QWidget *parent) : QAbstractButton(parent)
 {
     QAbstractButton::setCheckable(true);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-}
-
-SwitchButton::~SwitchButton()
-{
-
+    
+    QPalette palette = QAbstractButton::palette();
+    _onBgColor = palette.color(QPalette::Highlight);
+    _offBgColor = palette.color(QPalette::Mid);
+    _onSliderColor = palette.color(QPalette::Base);
+    _offSliderColor = palette.color(QPalette::Base);
 }
 
 void SwitchButton::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
+    
+    const float marginRatio = 0.20f;
 
-    QRectF offRect(height() * 0.05, height() * 0.05, height() * 0.9, height() * 0.9);
-    QRectF onRect(width() - height() * 0.95, height() * 0.05, height() * 0.9, height() * 0.9);
+    int offset = isChecked() ? width() - height() : 0;
+    QRectF sRect(offset + height() * marginRatio, height() * marginRatio, height() * (1-2*marginRatio), height() * (1-2*marginRatio));
 
-    if (!isEnabled() && !isChecked()) {  //未启用
-        painter.setPen(QPen(DEFAULT_DISABLED_OFF_BG_COLOR));
-        painter.setBrush(QBrush(DEFAULT_DISABLED_OFF_BG_COLOR));
+    if (!isEnabled() )
+    {
+        const QColor DISABLED_ON_BG_COLOR = QAbstractButton::palette().color(QPalette::Dark);
+        const QColor DISABLED_OFF_BG_COLOR = _offBgColor.lighter(150);
+        const QColor DISABLED_ON_SLIDER_COLOR = _onSliderColor.darker(120);
+        const QColor DISABLED_OFF_SLIDER_COLOR = _offSliderColor.darker(120);
+    
+        painter.setPen(QPen(isChecked() ? DISABLED_ON_BG_COLOR : DISABLED_OFF_BG_COLOR));
+        painter.setBrush(QBrush(isChecked() ? DISABLED_ON_BG_COLOR : DISABLED_OFF_BG_COLOR));
         drawBackground(&painter);
 
-        painter.setPen(QPen(DEFAULT_DISABLED_OFF_SLIDER_COLOR));
-        painter.setBrush(QBrush(DEFAULT_DISABLED_OFF_SLIDER_COLOR));
-        drawSlider(&painter, offRect);
-    } else if (!isEnabled() && isChecked()) {
-        painter.setPen(QPen(DEFAULT_DISABLED_ON_BG_COLOR));
-        painter.setBrush(QBrush(DEFAULT_DISABLED_ON_BG_COLOR));
+        painter.setPen(QPen(isChecked() ? DISABLED_ON_SLIDER_COLOR : DISABLED_OFF_SLIDER_COLOR));
+        painter.setBrush(QBrush(isChecked() ? DISABLED_ON_SLIDER_COLOR : DISABLED_OFF_SLIDER_COLOR));
+        drawSlider(&painter, sRect);
+    }
+    else
+    {
+        painter.setPen(QPen(isChecked() ? _onBgColor : _offBgColor));
+        painter.setBrush(QBrush(isChecked() ? _onBgColor : _offBgColor));
         drawBackground(&painter);
 
-        painter.setPen(QPen(DEFAULT_DISABLED_ON_SLIDER_COLOR));
-        painter.setBrush(QBrush(DEFAULT_DISABLED_ON_SLIDER_COLOR));
-        drawSlider(&painter, onRect);
-    } else if (isChecked()) {
-        painter.setPen(QPen(_onBgColor));
-        painter.setBrush(QBrush(_onBgColor));
-        drawBackground(&painter);
-
-        painter.setPen(QPen(_onSliderColor));
-        painter.setBrush(QBrush(_onSliderColor));
-        drawSlider(&painter, onRect);
-    } else {
-        painter.setPen(QPen(_offBgColor));
-        painter.setBrush(QBrush(_offBgColor));
-        drawBackground(&painter);
-
-        painter.setPen(QPen(_offSliderColor));
-        painter.setBrush(QBrush(_offSliderColor));
-        drawSlider(&painter, offRect);
+        painter.setPen(QPen(isChecked() ? _onSliderColor : _offSliderColor));
+        painter.setBrush(QBrush(isChecked() ? _onSliderColor : _offSliderColor));
+        drawSlider(&painter, sRect);
     }
 
     return QWidget::paintEvent(event);
 }
 
-void SwitchButton::mouseMoveEvent(QMouseEvent *event)
-{
-    setCursor(Qt::PointingHandCursor);
-
-    return QWidget::mouseMoveEvent(event);
-}
-
 void SwitchButton::drawBackground(QPainter *painter)
 {
-    painter->drawEllipse(0, 0, height(), height());
-    painter->drawEllipse(width() - height(), 0, height(), height());
-    painter->drawRect(height() / 2, 0, width() - height(), height());
+    QRect r = rect().adjusted(1,1,-1,-1); // Use pen size?
+    painter->drawRoundedRect(r, r.height()/2.0, r.height()/2.0);
 }
 
 void SwitchButton::drawSlider(QPainter *painter, const QRectF &rect)
