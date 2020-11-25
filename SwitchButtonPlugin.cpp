@@ -1,32 +1,11 @@
-#include "SwitchButton.hpp"
-#include "SwitchButtonPlugin.hpp"
+#include "SwitchButton.h"
+#include "SwitchButtonPlugin.h"
 
 #include <QtPlugin>
 
-SwitchButtonPlugin::SwitchButtonPlugin(QObject *parent)
-    : QObject(parent)
+SwitchButtonPlugin::SwitchButtonPlugin(QObject *parent) : QObject(parent)
 {
-    m_initialized = false;
-}
-
-void SwitchButtonPlugin::initialize(QDesignerFormEditorInterface * /* core */)
-{
-    if (m_initialized)
-        return;
-
-    // Add extension registrations, etc. here
-
-    m_initialized = true;
-}
-
-bool SwitchButtonPlugin::isInitialized() const
-{
-    return m_initialized;
-}
-
-QWidget *SwitchButtonPlugin::createWidget(QWidget *parent)
-{
-    return new SwitchButton(parent);
+    initialized = false;
 }
 
 QString SwitchButtonPlugin::name() const
@@ -36,7 +15,22 @@ QString SwitchButtonPlugin::name() const
 
 QString SwitchButtonPlugin::group() const
 {
-    return QLatin1String("");
+    return QLatin1String("Buttons");
+}
+
+QString SwitchButtonPlugin::toolTip() const
+{
+    return QLatin1String("Switch button");
+}
+
+QString SwitchButtonPlugin::whatsThis() const
+{
+    return QLatin1String("Switch button");
+}
+
+QString SwitchButtonPlugin::includeFile() const
+{
+    return QLatin1String("SwitchButton.h");
 }
 
 QIcon SwitchButtonPlugin::icon() const
@@ -44,14 +38,23 @@ QIcon SwitchButtonPlugin::icon() const
     return QIcon("://Icon.png");
 }
 
-QString SwitchButtonPlugin::toolTip() const
+QWidget *SwitchButtonPlugin::createWidget(QWidget *parent)
 {
-    return QLatin1String("");
+    return new SwitchButton(parent);
 }
 
-QString SwitchButtonPlugin::whatsThis() const
+bool SwitchButtonPlugin::isInitialized() const
 {
-    return QLatin1String("");
+    return initialized;
+}
+
+void SwitchButtonPlugin::initialize(QDesignerFormEditorInterface * /* core */)
+{
+    if (initialized) return;
+
+    // Add extension registrations, etc. here
+
+    initialized = true;
 }
 
 bool SwitchButtonPlugin::isContainer() const
@@ -64,10 +67,6 @@ QString SwitchButtonPlugin::domXml() const
     return QLatin1String("<widget class=\"SwitchButton\" name=\"switchButton\">\n</widget>\n");
 }
 
-QString SwitchButtonPlugin::includeFile() const
-{
-    return QLatin1String("SwitchButton.hpp");
-}
 #if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(switchbuttonplugin, SwitchButtonPlugin)
-#endif // QT_VERSION < 0x050000
+#endif

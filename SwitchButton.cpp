@@ -1,4 +1,4 @@
-﻿#include "SwitchButton.hpp"
+﻿#include "SwitchButton.h"
 #include <QPainter>
 #include <QRectF>
 #include <QPalette>

@@ -1,2 +1,4 @@
-HEADERS += SwitchButton.hpp
-SOURCES += SwitchButton.cpp
+INCLUDEPATH += $$PWD/
+
+HEADERS += $$PWD/SwitchButton.h
+SOURCES += $$PWD/SwitchButton.cpp

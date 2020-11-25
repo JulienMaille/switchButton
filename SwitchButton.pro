@@ -1,19 +1,23 @@
-CONFIG      += plugin debug_and_release
-TARGET      = $$qtLibraryTarget(switchbuttonplugin)
-TEMPLATE    = lib
-
-HEADERS     = SwitchButtonPlugin.hpp
-SOURCES     = SwitchButtonPlugin.cpp
-RESOURCES   = icons.qrc
-LIBS        += -L. 
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += designer
-} else {
-    CONFIG += designer
-}
-
-target.path = $$[QT_INSTALL_PLUGINS]/designer
-INSTALLS    += target
-
-include(switchbutton.pri)
+TEMPLATE = lib
+TARGET   = $$qtLibraryTarget($$TARGET)
+CONFIG  += plugin
+
+!build_pass: message( + $$TARGET )
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += designer
+} else {
+    CONFIG += designer
+}
+
+QTDIR_build:DESTDIR = $$QT_BUILD_TREE/plugins/designer
+
+HEADERS     = SwitchButtonPlugin.h
+SOURCES     = SwitchButtonPlugin.cpp
+RESOURCES   = icons.qrc
+
+# install
+target.path = $$[QT_INSTALL_PLUGINS]/designer
+INSTALLS   += target
+
+include(switchbutton.pri)
