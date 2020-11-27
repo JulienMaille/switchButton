@@ -13,32 +13,26 @@ SwitchButton::SwitchButton(QWidget *parent) : QAbstractButton(parent)
     _offBgColor = palette.color(QPalette::Mid);
     _onSliderColor = palette.color(QPalette::Base);
     _offSliderColor = palette.color(QPalette::Base);
+
+    _onBgColorDisabled = QAbstractButton::palette().color(QPalette::Dark);
 }
 
 void SwitchButton::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform);
-    
-    const float marginRatio = 0.20f;
 
     int offset = isChecked() ? width() - height() : 0;
-    QRectF sRect(offset + height() * marginRatio, height() * marginRatio, height() * (1-2*marginRatio), height() * (1-2*marginRatio));
+    QRectF sRect(offset, 0, height(), height());
 
     if (!isEnabled() )
     {
-        const QColor DISABLED_ON_BG_COLOR = QAbstractButton::palette().color(QPalette::Dark);
-        const QColor DISABLED_OFF_BG_COLOR = _offBgColor.lighter(150);
-        const QColor DISABLED_ON_SLIDER_COLOR = _onSliderColor.darker(120);
-        const QColor DISABLED_OFF_SLIDER_COLOR = _offSliderColor.darker(120);
-    
-        painter.setPen(QPen(isChecked() ? DISABLED_ON_BG_COLOR : DISABLED_OFF_BG_COLOR));
-        painter.setBrush(QBrush(isChecked() ? DISABLED_ON_BG_COLOR : DISABLED_OFF_BG_COLOR));
+        painter.setPen(QPen(isChecked() ? _onBgColorDisabled : _offBgColorDisabled));
+        painter.setBrush(QBrush(isChecked() ? _onBgColorDisabled : _offBgColorDisabled));
         drawBackground(&painter);
 
-        painter.setPen(QPen(isChecked() ? DISABLED_ON_SLIDER_COLOR : DISABLED_OFF_SLIDER_COLOR));
-        painter.setBrush(QBrush(isChecked() ? DISABLED_ON_SLIDER_COLOR : DISABLED_OFF_SLIDER_COLOR));
+        painter.setPen(QPen(isChecked() ? _onSliderColorDisabled : _offSliderColorDisabled));
+        painter.setBrush(QBrush(isChecked() ? _onSliderColorDisabled : _offSliderColorDisabled));
         drawSlider(&painter, sRect);
     }
     else
@@ -57,11 +51,13 @@ void SwitchButton::paintEvent(QPaintEvent *event)
 
 void SwitchButton::drawBackground(QPainter *painter)
 {
-    QRect r = rect().adjusted(1,1,-1,-1); // Use pen size?
+    QRectF r = rect().adjusted(1,1,-1,-1); // Use pen size?
     painter->drawRoundedRect(r, r.height()/2.0, r.height()/2.0);
 }
 
 void SwitchButton::drawSlider(QPainter *painter, const QRectF &rect)
 {
-    painter->drawEllipse(rect);
+    float margin = 1 + _marginSliderRatio*height();
+    QRectF r = rect.adjusted(margin, margin, -margin, -margin);
+    painter->drawEllipse(r);
 }
