@@ -2,26 +2,36 @@
 
 #include <QAbstractButton>
 
+class QPropertyAnimation;
+
 class SwitchButton : public QAbstractButton
 {
     Q_OBJECT
+    Q_PROPERTY(int sliderOffset READ offset WRITE setOffset DESIGNABLE false)
+    Q_PROPERTY(double sliderRatio READ sliderRatio WRITE setSliderRatio)
+    Q_PROPERTY(QColor onBgColor READ onBgColor WRITE setOnBgColor)
+    Q_PROPERTY(QColor onSliderColor READ onSliderColor WRITE setOnSliderColor)
+    Q_PROPERTY(QColor offBgColor READ offBgColor WRITE setOffBgColor)
+    Q_PROPERTY(QColor offSliderColor READ offSliderColor WRITE setOffSliderColor)
 
 public:
-    SwitchButton(QWidget *parent = nullptr);
+    SwitchButton(QWidget *parent = NULL);
+    ~SwitchButton();
 
     QColor onBgColor() const { return _onBgColor; }
     void setOnBgColor(const QColor &color) { _onBgColor = color; repaint(); }
     QColor offBgColor() const { return _offBgColor; }
-    void setOffBgColor(const QColor& color) { _offBgColor = color; _offBgColorDisabled = _offBgColor.lighter(150);  repaint(); }
+    void setOffBgColor(const QColor& color) { _offBgColor = color; _offBgColorDisabled = _offBgColor.lighter(150); repaint(); }
 
     QColor onSliderColor() const { return _onSliderColor; }
     void setOnSliderColor(const QColor &color) { _onSliderColor = color; _onSliderColorDisabled = _onSliderColor.darker(120); repaint(); }
     QColor offSliderColor() const { return _offSliderColor; }
     void setOffSliderColor(const QColor& color) { _offSliderColor = color; _offSliderColorDisabled = _offSliderColor.darker(120); repaint(); }
 
-    void setOffSliderColor(float ratio) { _marginSliderRatio = ratio; repaint(); }
+    float sliderRatio() { return _sliderRatio; }
+    void setSliderRatio(float ratio) { _sliderRatio = ratio; repaint(); }
 
-    virtual QSize sizeHint() const override { return QSize(fontMetrics().height() * 3, fontMetrics().height() * 1.5); }
+    virtual QSize sizeHint() const override { return QSize(fontMetrics().height() * 2.5, fontMetrics().height() * 1.25); }
 
     bool isCheckable() const = delete;
     void setCheckable(bool) = delete;
@@ -31,12 +41,22 @@ public:
 
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
+    virtual void resizeEvent(QResizeEvent* event) override;
+
+private slots:
+    void slotClicked(bool on);
 
 private:
     void drawBackground(QPainter *painter);
-    void drawSlider(QPainter *painter, const QRectF &rect);
+    void drawSlider(QPainter *painter);
 
-    float _marginSliderRatio = 0.20f;
+    int offset() const { return _sliderOffset; }
+    void setOffset(int o) { _sliderOffset = o; update(); }
+    QPropertyAnimation* _animation;
+    int _sliderOffset = 0;
+
+    float _sliderRatio = 0.20f;
+
     QColor _onBgColor, _offBgColor;
     QColor _onSliderColor, _offSliderColor;
     QColor _onBgColorDisabled, _offBgColorDisabled;
