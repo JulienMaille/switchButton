@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="SwitchButton">
+        <file>designericon.png</file>
+    </qresource>
+</RCC>

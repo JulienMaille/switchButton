@@ -35,7 +35,7 @@ QString SwitchButtonPlugin::includeFile() const
 
 QIcon SwitchButtonPlugin::icon() const
 {
-    return QIcon("://Icon.png");
+    return QIcon(":/SwitchButton/designericon.png");
 }
 
 QWidget *SwitchButtonPlugin::createWidget(QWidget *parent)

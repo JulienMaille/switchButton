@@ -14,7 +14,7 @@ QTDIR_build:DESTDIR = $$QT_BUILD_TREE/plugins/designer
 
 HEADERS     = SwitchButtonPlugin.h
 SOURCES     = SwitchButtonPlugin.cpp
-RESOURCES   = icons.qrc
+RESOURCES   = designericons.qrc
 
 # install
 target.path = $$[QT_INSTALL_PLUGINS]/designer
