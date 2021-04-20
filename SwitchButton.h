@@ -21,12 +21,12 @@ public:
     QColor onBgColor() const { return _onBgColor; }
     void setOnBgColor(const QColor &color) { _onBgColor = color; repaint(); }
     QColor offBgColor() const { return _offBgColor; }
-    void setOffBgColor(const QColor& color) { _offBgColor = color; _offBgColorDisabled = _offBgColor.lighter(150); repaint(); }
+    void setOffBgColor(const QColor& color) { _offBgColor = color; repaint(); }
 
     QColor onSliderColor() const { return _onSliderColor; }
-    void setOnSliderColor(const QColor &color) { _onSliderColor = color; _onSliderColorDisabled = _onSliderColor.darker(120); repaint(); }
+    void setOnSliderColor(const QColor &color) { _onSliderColor = color; repaint(); }
     QColor offSliderColor() const { return _offSliderColor; }
-    void setOffSliderColor(const QColor& color) { _offSliderColor = color; _offSliderColorDisabled = _offSliderColor.darker(120); repaint(); }
+    void setOffSliderColor(const QColor& color) { _offSliderColor = color; repaint(); }
 
     float sliderRatio() { return _sliderRatio; }
     void setSliderRatio(float ratio) { _sliderRatio = ratio; repaint(); }
@@ -59,6 +59,4 @@ private:
 
     QColor _onBgColor, _offBgColor;
     QColor _onSliderColor, _offSliderColor;
-    QColor _onBgColorDisabled, _offBgColorDisabled;
-    QColor _onSliderColorDisabled, _offSliderColorDisabled;
 };
