@@ -1,7 +1,5 @@
 ﻿#include "SwitchButton.h"
 #include <QPainter>
-#include <QRectF>
-#include <QPalette>
 #include <QPropertyAnimation>
 
 SwitchButton::SwitchButton(QWidget *parent) : QAbstractButton(parent)
