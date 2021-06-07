@@ -9,6 +9,7 @@ class SwitchButton : public QAbstractButton
     Q_OBJECT
     Q_PROPERTY(int sliderOffset READ offset WRITE setOffset DESIGNABLE false)
     Q_PROPERTY(double sliderRatio READ sliderRatio WRITE setSliderRatio)
+    Q_PROPERTY(double backgroundRatio READ backgroundRatio WRITE setBackgroundRatio)
     Q_PROPERTY(QColor onBgColor READ onBgColor WRITE setOnBgColor)
     Q_PROPERTY(QColor onSliderColor READ onSliderColor WRITE setOnSliderColor)
     Q_PROPERTY(QColor offBgColor READ offBgColor WRITE setOffBgColor)
@@ -28,16 +29,17 @@ public:
     QColor offSliderColor() const { return _offSliderColor; }
     void setOffSliderColor(const QColor& color) { _offSliderColor = color; repaint(); }
 
+    float backgroundRatio() { return _backgroundRatio; }
+    void setBackgroundRatio(float ratio) { _backgroundRatio = ratio; repaint(); }
     float sliderRatio() { return _sliderRatio; }
     void setSliderRatio(float ratio) { _sliderRatio = ratio; repaint(); }
 
-    virtual QSize sizeHint() const override { return QSize(fontMetrics().height() * 2.5, fontMetrics().height() * 1.25); }
+    virtual QSize sizeHint() const override;
 
     bool isCheckable() const = delete;
     void setCheckable(bool) = delete;
-
-    QString text() const = delete;
-    void setText(const QString &text) = delete;
+    QIcon icon() const = delete;
+    void setIcon(const QIcon &icon) = delete;
 
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
@@ -49,13 +51,15 @@ private slots:
 private:
     void drawBackground(QPainter *painter);
     void drawSlider(QPainter *painter);
+    float switchWidth() const;
 
     int offset() const { return _sliderOffset; }
     void setOffset(int o) { _sliderOffset = o; update(); }
     QPropertyAnimation* _animation;
     int _sliderOffset = 0;
 
-    float _sliderRatio = 0.20f;
+    float _backgroundRatio = 2.3f;
+    float _sliderRatio = 0.25f;
 
     QColor _onBgColor, _offBgColor;
     QColor _onSliderColor, _offSliderColor;
