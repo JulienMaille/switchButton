@@ -8,7 +8,6 @@ SwitchButton::SwitchButton(QWidget *parent) : QAbstractButton(parent)
 {
     QAbstractButton::setCheckable(true);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(this, SIGNAL(clicked(bool)), this, SLOT(slotClicked(bool)));
 
     _animation = new QPropertyAnimation(this, "sliderOffset");
     _animation->setDuration(100);
@@ -79,6 +78,13 @@ void SwitchButton::slotClicked(bool on)
     _animation->setStartValue(_sliderOffset);
     _animation->setEndValue(on ? switchWidth() - height() : 0);
     _animation->start();
+}
+
+void SwitchButton::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+    if( !_connected )
+        connect(this, SIGNAL(toggled(bool)), this, SLOT(slotClicked(bool)));
 }
 
 void SwitchButton::resizeEvent(QResizeEvent* event)

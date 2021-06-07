@@ -43,6 +43,7 @@ public:
 
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
+    virtual void showEvent(QShowEvent *event) override;
     virtual void resizeEvent(QResizeEvent* event) override;
 
 private slots:
@@ -57,6 +58,7 @@ private:
     void setOffset(int o) { _sliderOffset = o; update(); }
     QPropertyAnimation* _animation;
     int _sliderOffset = 0;
+    bool _connected = false;
 
     float _backgroundRatio = 2.3f;
     float _sliderRatio = 0.25f;
