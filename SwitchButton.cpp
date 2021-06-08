@@ -12,6 +12,8 @@ SwitchButton::SwitchButton(QWidget *parent) : QAbstractButton(parent)
     _animation->setDuration(100);
 
     _onBgColor = QAbstractButton::palette().color(QPalette::Highlight);
+    setText(tr("Off"));
+    _onText = tr("On");
 }
 
 SwitchButton::~SwitchButton()
@@ -21,7 +23,7 @@ SwitchButton::~SwitchButton()
 
 float SwitchButton::switchWidth() const
 {
-    return fontMetrics().height() * _backgroundRatio;
+    return fontMetrics().height() * _widthRatio;
 }
 
 void SwitchButton::paintEvent(QPaintEvent *event)
@@ -45,12 +47,12 @@ void SwitchButton::paintEvent(QPaintEvent *event)
     drawBackground(&painter);
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QBrush(isChecked() ? sliderCol : textCol));
+    painter.setBrush(QBrush(isChecked() && _sliderRatio < 1.0f ? sliderCol : textCol));
     drawSlider(&painter);
 
     painter.setPen(textCol);
     QRect r = rect().adjusted(switchWidth() + fontMetrics().width(" "), 0, 0, 0);
-    painter.drawText(r, Qt::AlignVCenter|Qt::AlignLeft, text());
+    painter.drawText(r, Qt::AlignVCenter|Qt::AlignLeft, isChecked() ? _onText : text());
 
     return QWidget::paintEvent(event);
 }
@@ -82,7 +84,10 @@ void SwitchButton::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event)
     if( !_connected )
+    {
         connect(this, SIGNAL(toggled(bool)), this, SLOT(slotClicked(bool)));
+        _connected = true;
+    }
 }
 
 void SwitchButton::resizeEvent(QResizeEvent* event)

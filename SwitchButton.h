@@ -7,9 +7,13 @@ class QPropertyAnimation;
 class SwitchButton : public QAbstractButton
 {
     Q_OBJECT
+    Q_PROPERTY(QIcon icon DESIGNABLE false)
+    Q_PROPERTY(QSize iconSize DESIGNABLE false)
     Q_PROPERTY(int sliderOffset READ offset WRITE setOffset DESIGNABLE false)
+    Q_PROPERTY(QString text READ text WRITE setText)
+    Q_PROPERTY(QString onText MEMBER _onText)
     Q_PROPERTY(double sliderRatio READ sliderRatio WRITE setSliderRatio)
-    Q_PROPERTY(double backgroundRatio READ backgroundRatio WRITE setBackgroundRatio)
+    Q_PROPERTY(double widthRatio READ widthRatio WRITE setWidthRatio)
     Q_PROPERTY(QColor onBgColor READ onBgColor WRITE setOnBgColor)
 
 public:
@@ -17,12 +21,12 @@ public:
     ~SwitchButton();
 
     QColor onBgColor() const { return _onBgColor; }
-    void setOnBgColor(const QColor &color) { _onBgColor = color; repaint(); }
+    void setOnBgColor(const QColor &color) { _onBgColor = color; update(); }
 
-    float backgroundRatio() { return _backgroundRatio; }
-    void setBackgroundRatio(float ratio) { _backgroundRatio = ratio; repaint(); }
+    float widthRatio() { return _widthRatio; }
+    void setWidthRatio(float ratio) { _widthRatio = qMax(1.1f, ratio); if( isChecked() ) _sliderOffset = switchWidth() - height(); update(); }
     float sliderRatio() { return _sliderRatio; }
-    void setSliderRatio(float ratio) { _sliderRatio = ratio; repaint(); }
+    void setSliderRatio(float ratio) { _sliderRatio = qMax(0.0f, ratio); update(); }
 
     virtual QSize sizeHint() const override;
 
@@ -50,8 +54,8 @@ private:
     int _sliderOffset = 0;
     bool _connected = false;
 
-    float _backgroundRatio = 2.3f;
+    QString _onText;
+    float _widthRatio = 2.3f;
     float _sliderRatio = 0.25f;
-
     QColor _onBgColor;
 };
