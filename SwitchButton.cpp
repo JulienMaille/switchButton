@@ -7,15 +7,11 @@
 SwitchButton::SwitchButton(QWidget *parent) : QAbstractButton(parent)
 {
     QAbstractButton::setCheckable(true);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     _animation = new QPropertyAnimation(this, "sliderOffset");
     _animation->setDuration(100);
 
-    QPalette palette = QAbstractButton::palette();
-    _onBgColor = palette.color(QPalette::Highlight);
-    _offBgColor = palette.color(QPalette::Mid).lighter(130);
-    _onSliderColor = _offSliderColor = palette.color(QPalette::Base);
+    _onBgColor = QAbstractButton::palette().color(QPalette::Highlight);
 }
 
 SwitchButton::~SwitchButton()
@@ -32,26 +28,27 @@ void SwitchButton::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
+    QPalette palette = QAbstractButton::palette();
+    QColor textCol = palette.color(isEnabled() ?  QPalette::Normal : QPalette::Disabled, QPalette::Text);
+    QColor sliderCol = palette.color(isEnabled() ?  QPalette::Normal : QPalette::Disabled, QPalette::BrightText);
+
+    if( isChecked() )
+    {
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(isEnabled() ? _onBgColor : textCol);
+    }
+    else 
+    {
+        painter.setPen(QPen(textCol, 2.0));
+        painter.setBrush(Qt::NoBrush);
+    }
+    drawBackground(&painter);
+
     painter.setPen(Qt::NoPen);
+    painter.setBrush(QBrush(isChecked() ? sliderCol : textCol));
+    drawSlider(&painter);
 
-    if (!isEnabled() )
-    {
-        painter.setBrush(_offBgColor.darker(110));
-        drawBackground(&painter);
-
-        painter.setBrush(QAbstractButton::palette().color(QPalette::Button));
-        drawSlider(&painter);
-    }
-    else
-    {
-        painter.setBrush(QBrush(isChecked() ? _onBgColor : _offBgColor));
-        drawBackground(&painter);
-
-        painter.setBrush(QBrush(isChecked() ? _onSliderColor : _offSliderColor));
-        drawSlider(&painter);
-    }
-
-    painter.setPen(QAbstractButton::palette().color(isEnabled() ? QPalette::Normal : QPalette::Disabled, QPalette::Text));
+    painter.setPen(textCol);
     QRect r = rect().adjusted(switchWidth() + fontMetrics().width(" "), 0, 0, 0);
     painter.drawText(r, Qt::AlignVCenter|Qt::AlignLeft, text());
 
@@ -62,6 +59,7 @@ void SwitchButton::drawBackground(QPainter *painter)
 {
     QRectF r(0, 0, switchWidth(), height());
     if( _sliderRatio > 1.0f ) r.adjust(0, height() * (_sliderRatio - 1), 0, -height() * (_sliderRatio - 1));
+    if( !isChecked() ) r.adjust(1, 1, -1, -1);
     painter->drawRoundedRect(r, r.height()/2.0, r.height()/2.0);
 }
 

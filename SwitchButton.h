@@ -11,9 +11,6 @@ class SwitchButton : public QAbstractButton
     Q_PROPERTY(double sliderRatio READ sliderRatio WRITE setSliderRatio)
     Q_PROPERTY(double backgroundRatio READ backgroundRatio WRITE setBackgroundRatio)
     Q_PROPERTY(QColor onBgColor READ onBgColor WRITE setOnBgColor)
-    Q_PROPERTY(QColor onSliderColor READ onSliderColor WRITE setOnSliderColor)
-    Q_PROPERTY(QColor offBgColor READ offBgColor WRITE setOffBgColor)
-    Q_PROPERTY(QColor offSliderColor READ offSliderColor WRITE setOffSliderColor)
 
 public:
     SwitchButton(QWidget *parent = NULL);
@@ -21,13 +18,6 @@ public:
 
     QColor onBgColor() const { return _onBgColor; }
     void setOnBgColor(const QColor &color) { _onBgColor = color; repaint(); }
-    QColor offBgColor() const { return _offBgColor; }
-    void setOffBgColor(const QColor& color) { _offBgColor = color; repaint(); }
-
-    QColor onSliderColor() const { return _onSliderColor; }
-    void setOnSliderColor(const QColor &color) { _onSliderColor = color; repaint(); }
-    QColor offSliderColor() const { return _offSliderColor; }
-    void setOffSliderColor(const QColor& color) { _offSliderColor = color; repaint(); }
 
     float backgroundRatio() { return _backgroundRatio; }
     void setBackgroundRatio(float ratio) { _backgroundRatio = ratio; repaint(); }
@@ -63,6 +53,5 @@ private:
     float _backgroundRatio = 2.3f;
     float _sliderRatio = 0.25f;
 
-    QColor _onBgColor, _offBgColor;
-    QColor _onSliderColor, _offSliderColor;
+    QColor _onBgColor;
 };
