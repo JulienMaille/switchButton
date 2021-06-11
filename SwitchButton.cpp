@@ -11,7 +11,6 @@ SwitchButton::SwitchButton(QWidget *parent) : QAbstractButton(parent)
     _animation = new QPropertyAnimation(this, "sliderOffset");
     _animation->setDuration(100);
 
-    _onBgColor = QAbstractButton::palette().color(QPalette::Highlight);
     setText(tr("Off"));
     _onText = tr("On");
 }
@@ -36,8 +35,9 @@ void SwitchButton::paintEvent(QPaintEvent *event)
 
     if( isChecked() )
     {
+        QColor onCol = _onBgColor.isValid() ? _onBgColor : QAbstractButton::palette().color(QPalette::Highlight);
         painter.setPen(Qt::NoPen);
-        painter.setBrush(isEnabled() ? _onBgColor : textCol);
+        painter.setBrush(isEnabled() ? onCol : textCol);
     }
     else 
     {

@@ -57,5 +57,5 @@ private:
     QString _onText;
     float _widthRatio = 2.3f;
     float _sliderRatio = 0.25f;
-    QColor _onBgColor;
+    QColor _onBgColor = QColor();
 };
