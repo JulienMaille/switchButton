@@ -7,8 +7,8 @@ class QPropertyAnimation;
 class SwitchButton : public QAbstractButton
 {
     Q_OBJECT
-    Q_PROPERTY(QIcon icon DESIGNABLE false)
-    Q_PROPERTY(QSize iconSize DESIGNABLE false)
+    Q_PROPERTY(QIcon icon READ icon DESIGNABLE false)
+    Q_PROPERTY(QSize iconSize READ iconSize DESIGNABLE false)
     Q_PROPERTY(int sliderOffset READ offset WRITE setOffset DESIGNABLE false)
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(QString onText MEMBER _onText)
@@ -32,8 +32,8 @@ public:
 
     bool isCheckable() const = delete;
     void setCheckable(bool) = delete;
-    QIcon icon() const = delete;
     void setIcon(const QIcon &icon) = delete;
+    void setIconSize(const QSize &size) = delete;
 
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
