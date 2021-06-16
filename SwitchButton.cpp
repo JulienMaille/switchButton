@@ -3,6 +3,7 @@
 #include <QPropertyAnimation>
 #include <QStyle>
 #include <QFontMetrics>
+#include <QCoreApplication>
 
 SwitchButton::SwitchButton(QWidget *parent) : QAbstractButton(parent)
 {
@@ -75,6 +76,9 @@ void SwitchButton::drawSlider(QPainter *painter)
 
 void SwitchButton::slotClicked(bool on)
 {
+    while( _animation->state() == QAbstractAnimation::Running )
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 100);
+
     _animation->setStartValue(_sliderOffset);
     _animation->setEndValue(on ? switchWidth() - height() : 0);
     _animation->start();
