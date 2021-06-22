@@ -55,7 +55,8 @@ private:
     bool _connected = false;
 
     QString _onText;
-    float _widthRatio = 2.3f;
-    float _sliderRatio = 0.25f;
+    float _widthRatio = 2.2f;   // H/W ratio
+    float _sliderRatio = 0.25f; // ratio of the "dot" handle over the height
+    float _border = 2.0f;       // thickness of the border
     QColor _onBgColor = QColor();
 };

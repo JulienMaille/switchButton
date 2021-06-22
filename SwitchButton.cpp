@@ -23,7 +23,7 @@ SwitchButton::~SwitchButton()
 
 float SwitchButton::switchWidth() const
 {
-    return fontMetrics().height() * _widthRatio;
+    return height() * _widthRatio;
 }
 
 void SwitchButton::paintEvent(QPaintEvent *event)
@@ -42,7 +42,7 @@ void SwitchButton::paintEvent(QPaintEvent *event)
     }
     else 
     {
-        painter.setPen(QPen(textCol, 2.0));
+        painter.setPen(QPen(textCol, _border));
         painter.setBrush(Qt::NoBrush);
     }
     drawBackground(&painter);
@@ -62,7 +62,7 @@ void SwitchButton::drawBackground(QPainter *painter)
 {
     QRectF r(0, 0, switchWidth(), height());
     if( _sliderRatio > 1.0f ) r.adjust(0, height() * (_sliderRatio - 1), 0, -height() * (_sliderRatio - 1));
-    if( !isChecked() ) r.adjust(1, 1, -1, -1);
+    if( !isChecked() ) r.adjust(_border/2, _border/2, -_border/2, -_border/2);
     painter->drawRoundedRect(r, r.height()/2.0, r.height()/2.0);
 }
 
@@ -105,5 +105,5 @@ QSize SwitchButton::sizeHint() const
     QFontMetrics fm = fontMetrics();
     QSize sz = style()->itemTextRect(fm, QRect(), Qt::TextShowMnemonic, false, text()).size();
     if( !text().isEmpty() ) sz += QSize(fontMetrics().width(" "), 0);
-    return QSize(switchWidth() + sz.width(), fm.height() * 1.1);
+    return QSize(switchWidth() + sz.width(), 20);
 }
