@@ -104,6 +104,6 @@ QSize SwitchButton::sizeHint() const
 {
     QFontMetrics fm = fontMetrics();
     QSize sz = style()->itemTextRect(fm, QRect(), Qt::TextShowMnemonic, false, text()).size();
-    if( !text().isEmpty() ) sz += QSize(fontMetrics().width(" "), 0);
+    if( !text().isEmpty() ) sz += QSize(fm.width(" "), 0);
     return QSize(switchWidth() + sz.width(), 20);
 }
