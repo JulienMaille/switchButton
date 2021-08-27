@@ -29,6 +29,8 @@ public:
     void setWidthRatio(float ratio) { _widthRatio = qMax(1.1f, ratio); if( isChecked() ) _sliderOffset = switchWidth() - height(); update(); }
     float sliderRatio() { return _sliderRatio; }
     void setSliderRatio(float ratio) { _sliderRatio = qMax(0.0f, ratio); update(); }
+    int labelOnLeft() const { return _labelOnLeft; }
+    void setLabelOnLeft(bool b) { _labelOnLeft = b; update(); }
 
     virtual QSize sizeHint() const override;
 
@@ -54,8 +56,6 @@ private:
 
     int offset() const { return _sliderOffset; }
     void setOffset(int o) { _sliderOffset = o; update(); }
-    int labelOnLeft() const { return _labelOnLeft; }
-    void setLabelOnLeft(bool b) { _labelOnLeft = b; update(); }
 
     QPropertyAnimation* _animation;
     int _sliderOffset = 0;
