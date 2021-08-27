@@ -12,6 +12,7 @@ class SwitchButton : public QAbstractButton
     Q_PROPERTY(int sliderOffset READ offset WRITE setOffset DESIGNABLE false)
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(QString onText MEMBER _onText)
+    Q_PROPERTY(bool labelOnLeft READ labelOnLeft WRITE setLabelOnLeft)
     Q_PROPERTY(double border MEMBER _border)
     Q_PROPERTY(double widthRatio READ widthRatio WRITE setWidthRatio)
     Q_PROPERTY(double sliderRatio READ sliderRatio WRITE setSliderRatio)
@@ -45,14 +46,20 @@ private slots:
     void slotClicked(bool on);
 
 private:
-    void drawBackground(QPainter *painter);
-    void drawSlider(QPainter *painter);
+    void drawBackground(QPainter *painter, int off);
+    void drawSlider(QPainter *painter, int off);
+    void drawLabel(QPainter *painter, int off);
     float switchWidth() const;
+    int textWidth() const;
 
     int offset() const { return _sliderOffset; }
     void setOffset(int o) { _sliderOffset = o; update(); }
+    int labelOnLeft() const { return _labelOnLeft; }
+    void setLabelOnLeft(bool b) { _labelOnLeft = b; update(); }
+
     QPropertyAnimation* _animation;
     int _sliderOffset = 0;
+    bool _labelOnLeft = false;
     bool _connected = false;
 
     QString _onText;

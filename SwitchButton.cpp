@@ -26,6 +26,11 @@ float SwitchButton::switchWidth() const
     return height() * _widthRatio;
 }
 
+int SwitchButton::textWidth() const
+{
+    return style()->itemTextRect(fontMetrics(), QRect(), Qt::TextShowMnemonic, false, text()).size().width();
+}
+
 void SwitchButton::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
@@ -45,33 +50,39 @@ void SwitchButton::paintEvent(QPaintEvent *event)
         painter.setPen(QPen(textCol, _border));
         painter.setBrush(Qt::NoBrush);
     }
-    drawBackground(&painter);
+
+    drawBackground(&painter, _labelOnLeft ? textWidth() + fontMetrics().width(" ") : 0);
 
     painter.setPen(Qt::NoPen);
     painter.setBrush(QBrush(isChecked() && _sliderRatio < 1.0f ? sliderCol : textCol));
-    drawSlider(&painter);
+    drawSlider(&painter, _labelOnLeft ? textWidth() + fontMetrics().width(" ") : 0);
 
     painter.setPen(textCol);
-    QRect r = rect().adjusted(switchWidth() + fontMetrics().width(" "), 0, 0, 0);
-    painter.drawText(r, Qt::AlignVCenter|Qt::AlignLeft, isChecked() ? _onText : text());
+    drawLabel(&painter, _labelOnLeft ? 0 : switchWidth() + fontMetrics().width(" "));
 
     return QWidget::paintEvent(event);
 }
 
-void SwitchButton::drawBackground(QPainter *painter)
+void SwitchButton::drawBackground(QPainter *painter, int hOff)
 {
-    QRectF r(0, 0, switchWidth(), height());
+    QRectF r(hOff, 0, switchWidth(), height());
     if( _sliderRatio > 1.0f ) r.adjust(0, height() * (_sliderRatio - 1), 0, -height() * (_sliderRatio - 1));
     if( !isChecked() ) r.adjust(_border/2, _border/2, -_border/2, -_border/2);
     painter->drawRoundedRect(r, r.height()/2.0, r.height()/2.0);
 }
 
-void SwitchButton::drawSlider(QPainter *painter)
+void SwitchButton::drawSlider(QPainter *painter, int hOff)
 {
     float margin = height();
     if( _sliderRatio < 1.0f ) margin *= _sliderRatio;
-    QRectF r = QRect(_sliderOffset, 0, height(), height()).adjusted(margin, margin, -margin, -margin);
+    QRectF r = QRect(hOff + _sliderOffset, 0, height(), height()).adjusted(margin, margin, -margin, -margin);
     painter->drawEllipse(r);
+}
+
+void SwitchButton::drawLabel(QPainter *painter, int hOff)
+{
+    QRect r = rect().adjusted(hOff, 0, 0, 0);
+    painter->drawText(r, Qt::AlignVCenter|Qt::AlignLeft, isChecked() ? _onText : text());
 }
 
 void SwitchButton::slotClicked(bool on)
@@ -102,8 +113,7 @@ void SwitchButton::resizeEvent(QResizeEvent* event)
 
 QSize SwitchButton::sizeHint() const
 {
-    QFontMetrics fm = fontMetrics();
-    QSize sz = style()->itemTextRect(fm, QRect(), Qt::TextShowMnemonic, false, text()).size();
-    if( !text().isEmpty() ) sz += QSize(fm.width(" "), 0);
-    return QSize(switchWidth() + sz.width(), 20);
+    int sz = textWidth();
+    if( !text().isEmpty() ) sz += fontMetrics().width(" ");
+    return QSize(switchWidth() + sz, 20);
 }
