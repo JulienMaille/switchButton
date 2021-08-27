@@ -14,6 +14,7 @@ class SwitchButton : public QAbstractButton
     Q_PROPERTY(QString onText MEMBER _onText)
     Q_PROPERTY(double border MEMBER _border)
     Q_PROPERTY(double widthRatio READ widthRatio WRITE setWidthRatio)
+    Q_PROPERTY(double sliderRatio READ sliderRatio WRITE setSliderRatio)
     Q_PROPERTY(QColor onBgColor READ onBgColor WRITE setOnBgColor)
 
 public:
@@ -25,7 +26,8 @@ public:
 
     float widthRatio() { return _widthRatio; }
     void setWidthRatio(float ratio) { _widthRatio = qMax(1.1f, ratio); if( isChecked() ) _sliderOffset = switchWidth() - height(); update(); }
-
+    float sliderRatio() { return _sliderRatio; }
+    void setSliderRatio(float ratio) { _sliderRatio = qMax(0.0f, ratio); update(); }
 
     virtual QSize sizeHint() const override;
 
