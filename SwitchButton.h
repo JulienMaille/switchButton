@@ -12,7 +12,6 @@ class SwitchButton : public QAbstractButton
     Q_PROPERTY(int sliderOffset READ offset WRITE setOffset DESIGNABLE false)
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(QString onText MEMBER _onText)
-    Q_PROPERTY(bool labelOnLeft READ labelOnLeft WRITE setLabelOnLeft)
     Q_PROPERTY(double border MEMBER _border)
     Q_PROPERTY(double widthRatio READ widthRatio WRITE setWidthRatio)
     Q_PROPERTY(double sliderRatio READ sliderRatio WRITE setSliderRatio)
@@ -29,8 +28,6 @@ public:
     void setWidthRatio(float ratio) { _widthRatio = qMax(1.1f, ratio); if( isChecked() ) _sliderOffset = switchWidth() - height(); update(); }
     float sliderRatio() { return _sliderRatio; }
     void setSliderRatio(float ratio) { _sliderRatio = qMax(0.0f, ratio); update(); }
-    int labelOnLeft() const { return _labelOnLeft; }
-    void setLabelOnLeft(bool b) { _labelOnLeft = b; update(); }
 
     virtual QSize sizeHint() const override;
 

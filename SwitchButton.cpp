@@ -51,14 +51,15 @@ void SwitchButton::paintEvent(QPaintEvent *event)
         painter.setBrush(Qt::NoBrush);
     }
 
-    drawBackground(&painter, _labelOnLeft ? textWidth() + fontMetrics().width(" ") : 0);
+    bool labelOnLeft = layoutDirection()==Qt::RightToLeft;
+    drawBackground(&painter, labelOnLeft ? textWidth() + fontMetrics().width(" ") : 0);
 
     painter.setPen(Qt::NoPen);
     painter.setBrush(QBrush(isChecked() && _sliderRatio < 1.0f ? sliderCol : textCol));
-    drawSlider(&painter, _labelOnLeft ? textWidth() + fontMetrics().width(" ") : 0);
+    drawSlider(&painter, labelOnLeft ? textWidth() + fontMetrics().width(" ") : 0);
 
     painter.setPen(textCol);
-    drawLabel(&painter, _labelOnLeft ? 0 : switchWidth() + fontMetrics().width(" "));
+    drawLabel(&painter, labelOnLeft ? 0 : switchWidth() + fontMetrics().width(" "));
 
     return QWidget::paintEvent(event);
 }
