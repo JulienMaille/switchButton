@@ -49,7 +49,8 @@ private:
     void drawSlider(QPainter *painter, int off);
     void drawLabel(QPainter *painter, int off);
     float switchWidth() const;
-    int textWidth() const;
+    int textWidth(const QString& text) const;
+    QString curText() const { return isChecked() ? _onText : text(); }
 
     int offset() const { return _sliderOffset; }
     void setOffset(int o) { _sliderOffset = o; update(); }

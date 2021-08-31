@@ -26,9 +26,9 @@ float SwitchButton::switchWidth() const
     return height() * _widthRatio;
 }
 
-int SwitchButton::textWidth() const
+int SwitchButton::textWidth(const QString& text) const
 {
-    return style()->itemTextRect(fontMetrics(), QRect(), Qt::TextShowMnemonic, false, text()).size().width();
+    return style()->itemTextRect(fontMetrics(), QRect(), Qt::TextShowMnemonic, false, text).size().width();
 }
 
 void SwitchButton::paintEvent(QPaintEvent *event)
@@ -52,14 +52,17 @@ void SwitchButton::paintEvent(QPaintEvent *event)
     }
 
     bool labelOnLeft = layoutDirection()==Qt::RightToLeft;
-    drawBackground(&painter, labelOnLeft ? textWidth() + fontMetrics().width(" ") : 0);
+    int margin = fontMetrics().width(" ");
+    int textW = qMax(textWidth(text()), textWidth(_onText)) + margin;
+
+    drawBackground(&painter, labelOnLeft ? textW : 0);
 
     painter.setPen(Qt::NoPen);
     painter.setBrush(QBrush(isChecked() && _sliderRatio < 1.0f ? sliderCol : textCol));
-    drawSlider(&painter, labelOnLeft ? textWidth() + fontMetrics().width(" ") : 0);
+    drawSlider(&painter, labelOnLeft ? textW : 0);
 
     painter.setPen(textCol);
-    drawLabel(&painter, labelOnLeft ? 0 : switchWidth() + fontMetrics().width(" "));
+    drawLabel(&painter, labelOnLeft ? 0 : switchWidth() + margin);
 
     return QWidget::paintEvent(event);
 }
@@ -82,8 +85,10 @@ void SwitchButton::drawSlider(QPainter *painter, int hOff)
 
 void SwitchButton::drawLabel(QPainter *painter, int hOff)
 {
-    QRect r = rect().adjusted(hOff, 0, 0, 0);
-    painter->drawText(r, Qt::AlignVCenter|Qt::AlignLeft, isChecked() ? _onText : text());
+    int textW = qMax(textWidth(text()), textWidth(_onText));
+    QRectF r = QRectF(hOff, 0, textW, height());
+    int flags = layoutDirection()==Qt::RightToLeft ? Qt::AlignVCenter|Qt::AlignRight : Qt::AlignVCenter|Qt::AlignLeft;
+    painter->drawText(r, flags, curText());
 }
 
 void SwitchButton::slotClicked(bool on)
@@ -114,7 +119,6 @@ void SwitchButton::resizeEvent(QResizeEvent* event)
 
 QSize SwitchButton::sizeHint() const
 {
-    int sz = textWidth();
-    if( !text().isEmpty() ) sz += fontMetrics().width(" ");
-    return QSize(switchWidth() + sz, 20);
+    int textW = qMax(textWidth(text()), textWidth(_onText)) + fontMetrics().width(" ");
+    return QSize(20 * _widthRatio + textW, 20);
 }
