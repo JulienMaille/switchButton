@@ -87,7 +87,7 @@ void SwitchButton::drawLabel(QPainter *painter, int hOff)
 {
     int textW = qMax(textWidth(text()), textWidth(_onText));
     QRectF r = QRectF(hOff, 0, textW, height());
-    int flags = layoutDirection()==Qt::RightToLeft ? Qt::AlignVCenter|Qt::AlignRight : Qt::AlignVCenter|Qt::AlignLeft;
+    int flags = Qt::AlignVCenter|Qt::AlignLeft;
     painter->drawText(r, flags, curText());
 }
 
