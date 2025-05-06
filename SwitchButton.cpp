@@ -1,4 +1,4 @@
-﻿#include "SwitchButton.h"
+#include "SwitchButton.h"
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <QStyle>
@@ -79,8 +79,28 @@ void SwitchButton::drawSlider(QPainter *painter, int hOff)
 {
     float margin = height();
     if( _sliderRatio < 1.0f ) margin *= _sliderRatio;
+    if( _hovered ) margin /= 1.15f;
+
     QRectF r = QRect(hOff + _sliderOffset, 0, height(), height()).adjusted(margin, margin, -margin, -margin);
-    painter->drawEllipse(r);
+
+    if( _pressed )
+    {
+        float stretch = 1.2f;
+        float originalWidth = r.width();
+        float newWidth = originalWidth * stretch;
+        float delta = newWidth - originalWidth;
+        r.setWidth(newWidth);
+
+        // Move left to keep right side fixed
+        if( isChecked() )
+            r.translate(-delta, 0);
+
+        painter->drawRoundedRect(r, r.height() / 2, r.height() / 2);
+    }
+    else
+    {
+        painter->drawEllipse(r);
+    }
 }
 
 void SwitchButton::drawLabel(QPainter *painter, int hOff)
@@ -121,4 +141,28 @@ QSize SwitchButton::sizeHint() const
 {
     int textW = qMax(textWidth(text()), textWidth(_onText)) + fontMetrics().width(" ");
     return QSize(20 * _widthRatio + textW, 20);
+}
+
+void SwitchButton::enterEvent(QEvent *event)
+{
+    _hovered = true;
+    QWidget::enterEvent(event);
+}
+
+void SwitchButton::leaveEvent(QEvent *event)
+{
+    _hovered = false;
+    QWidget::leaveEvent(event);
+}
+
+void SwitchButton::mousePressEvent(QMouseEvent *event)
+{
+    _pressed = true;
+    QAbstractButton::mousePressEvent(event);
+}
+
+void SwitchButton::mouseReleaseEvent(QMouseEvent *event)
+{
+    _pressed = false;
+    QAbstractButton::mouseReleaseEvent(event);
 }

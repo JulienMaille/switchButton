@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <QAbstractButton>
 
@@ -40,6 +40,10 @@ protected:
     virtual void paintEvent(QPaintEvent *event) override;
     virtual void showEvent(QShowEvent *event) override;
     virtual void resizeEvent(QResizeEvent* event) override;
+    void enterEvent(QEvent *event) override;
+    void leaveEvent(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private slots:
     void slotClicked(bool on);
@@ -59,10 +63,12 @@ private:
     int _sliderOffset = 0;
     bool _labelOnLeft = false;
     bool _connected = false;
+    bool _hovered = false;
+    bool _pressed = false;
 
     QString _onText;
     float _widthRatio = 2.2f;   // H/W ratio
-    float _sliderRatio = 0.25f; // ratio of the "dot" handle over the height
+    float _sliderRatio = 0.2f;  // ratio of the "dot" handle over the height
     float _border = 2.0f;       // thickness of the border
     QColor _onBgColor = QColor();
 };
