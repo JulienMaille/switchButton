@@ -4,11 +4,7 @@ CONFIG  += plugin
 
 !build_pass: message( + $$TARGET )
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += designer
-} else {
-    CONFIG += designer
-}
+QT += designer
 
 QTDIR_build:DESTDIR = $$QT_BUILD_TREE/plugins/designer
 
