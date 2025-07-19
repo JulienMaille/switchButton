@@ -52,7 +52,7 @@ void SwitchButton::paintEvent(QPaintEvent *event)
     }
 
     bool labelOnLeft = layoutDirection()==Qt::RightToLeft;
-    int margin = fontMetrics().width(" ");
+    int margin = fontMetrics().horizontalAdvance(" ");
     int textW = qMax(textWidth(text()), textWidth(_onText)) + margin;
 
     drawBackground(&painter, labelOnLeft ? textW : 0);
@@ -139,7 +139,7 @@ void SwitchButton::resizeEvent(QResizeEvent* event)
 
 QSize SwitchButton::sizeHint() const
 {
-    int textW = qMax(textWidth(text()), textWidth(_onText)) + fontMetrics().width(" ");
+    int textW = qMax(textWidth(text()), textWidth(_onText)) + fontMetrics().horizontalAdvance(" ");
     return QSize(20 * _widthRatio + textW, 20);
 }
 

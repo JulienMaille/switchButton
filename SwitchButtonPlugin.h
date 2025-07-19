@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class SwitchButtonPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
